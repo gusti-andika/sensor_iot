@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/gusti-andika/sensor_iot/rest-api/mymqtt"
+	"google.golang.org/protobuf/proto"
 )
 
 type temperature struct {
-	min    float64
-	max    float64
-	latest float64
+	min    float32
+	max    float32
+	latest float32
 }
 
 var Host = flag.String("host", "w7de211b.us-east-1.emqx.cloud", "server hostname or IP")
@@ -43,12 +43,13 @@ func latestTempHandler(w http.ResponseWriter, req *http.Request) {
 }
 
 func updateLatestTemperature(data []byte) {
-	latest, err := strconv.ParseFloat(string(data), 32)
-	if err != nil {
-		log.Printf("Error update temperature: %v \n", err)
+	temp := mymqtt.Temperature{}
+	if err := proto.Unmarshal(data, &temp); err != nil {
+		log.Printf("Error parse payload: %v \n", err)
 		return
 	}
 
+	latest := temp.GetValue()
 	if currentTemp.max == -1 || latest > currentTemp.max {
 		currentTemp.max = latest
 	}

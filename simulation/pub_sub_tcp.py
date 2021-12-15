@@ -3,8 +3,11 @@
 import json
 import random
 import time
+import proto.sensor_pb2
 
 from paho.mqtt import client as mqtt_client
+
+from proto.sensor_pb2 import Temperature
 
 
 BROKER = 'w7de211b.us-east-1.emqx.cloud'
@@ -44,8 +47,10 @@ def connect_mqtt():
 def publish(client):
     msg_count = 0
     while True:
-        temp = random.randint(25, 35)
-        result = client.publish(TOPIC, temp)
+        temp = Temperature()
+        temp.value = random.randint(25, 35)
+
+        result = client.publish(TOPIC, temp.SerializeToString())
         # result: [0, 1]
         status = result[0]
         if status == 0:
