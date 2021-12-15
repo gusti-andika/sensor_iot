@@ -1,7 +1,7 @@
 Implementation of REST-API consume mqtt message encoded protobuf sent from IOT devices (Simulated by a python script) . 
 React JS client than will display the mqtt message from REST-API.
 
-* PREREQUISITES
+** PREREQUISITES **
 - go version >= 1.15 
 - pyhon 3
 - execute generate_proto.sh to generate protobuf message for golang and python
